@@ -64,7 +64,7 @@ dependencyResolutionManagement {
 }
 
 dependencies {
-    implementation("com.github.0xera.parcelable:stream:0.1")
-    implementation("com.github.0xera.parcelable:slice:0.1")
+    implementation("com.github.0xera.parcelable-stream-slice:stream:0.1")
+    implementation("com.github.0xera.parcelable-stream-slice:slice:0.1")
 }
 ```
