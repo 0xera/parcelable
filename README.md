@@ -1,3 +1,6 @@
+[![](https://jitpack.io/v/0xera/parcelable-stream-slice.svg)](https://jitpack.io/#0xera/parcelable-stream-slice)
+
+
 Stream (Best performance):
 ```kotlin
 val largeData: Parcelable = //...
@@ -49,4 +52,19 @@ Intent(context, SomeActivity::class.java).apply {
 Thread {
   intent.getParcelableExtra<ParcelableInputStream<Parcelable>>(LARGE_DATA_PIPE)?.read()
 }.start()
+```
+
+
+Add dependencies:
+```kotlin
+dependencyResolutionManagement {
+    repositories {
+        maven("https://jitpack.io")
+    }
+}
+
+dependencies {
+    implementation("com.github.0xera.parcelable:stream:0.1")
+    implementation("com.github.0xera.parcelable:slice:0.1")
+}
 ```
