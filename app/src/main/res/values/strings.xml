@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">ParceledListSliceTest</string>
+    <string name="title_activity_target">TargetActivity</string>
+</resources>

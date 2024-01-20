@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    tools:context="com.zero.xera.parcelable.demo.MainActivity">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Serializable" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switch_pacel_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Parcelable" />
+    </LinearLayout>
+
+
+    <Button
+        android:id="@+id/button_go_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Data" />
+
+    <Button
+        android:id="@+id/button_go_slice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Slice" />
+
+    <Button
+        android:id="@+id/button_go_stream"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Stream" />
+
+    <Button
+        android:id="@+id/button_go_pipe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pipe" />
+
+    <Button
+        android:id="@+id/button_go_pipe_for_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pipe for result" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Time result from pipe:" />
+
+        <TextView
+            android:id="@+id/text_view_result_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Result from pipe:" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/text_view_result"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Data" />
+
+    </androidx.core.widget.NestedScrollView>
+
+</LinearLayout>
+
+

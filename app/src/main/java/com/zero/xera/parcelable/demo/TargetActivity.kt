@@ -1,0 +1,236 @@
+@file:OptIn(UnstableApi::class)
+
+package com.zero.xera.parcelable.demo
+
+import android.content.Context
+import android.content.Intent
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.widget.TextView
+import com.zero.xera.parcelable.slice.ParcelableSlice
+import com.zero.xera.parcelable.slice.join
+import com.zero.xera.parcelable.slice.parcelableSlice
+import com.zero.xera.parcelable.stream.ParcelableOutputStream
+import com.zero.xera.parcelable.stream.ParcelableInputStream
+import com.zero.xera.parcelable.stream.ParcelableStreamPipe
+import com.zero.xera.parcelable.stream.UnstableApi
+import com.zero.xera.parcelable.stream.parcelableInputStream
+import com.zero.xera.parcelable.stream.read
+import com.zero.xera.parcelable.stream.write
+import kotlin.system.measureTimeMillis
+
+class TargetActivity : AppCompatActivity(R.layout.activity_target) {
+
+    private lateinit var dataTextView: TextView
+    private lateinit var dataTypeTextView: TextView
+    private lateinit var timeTextView: TextView
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        dataTextView = findViewById(R.id.text_view_data)
+        dataTypeTextView = findViewById(R.id.text_view_data_type)
+        timeTextView = findViewById(R.id.text_view_time)
+
+        if (handleLargeData<ParcelableLargeData>(intent, DataType.PARCELABLE)) return
+        if (handleLargeData<SerializableLargeData>(intent, DataType.SERIALIZABLE)) return
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        if (handleLargeData<ParcelableLargeData>(intent, DataType.PARCELABLE)) return
+        if (handleLargeData<SerializableLargeData>(intent, DataType.SERIALIZABLE)) return
+    }
+
+    private inline fun <reified T> handleLargeData(intent: Intent, type: DataType): Boolean {
+        val data: T? = intent.getParcelableExtra(type.keyFor(LARGE_DATA))
+        val slice: ParcelableSlice<T>? = intent.getParcelableExtra(type.keyFor(LARGE_DATA_SLICE))
+        val stream: ParcelableInputStream<T>? = intent.getParcelableExtra(type.keyFor(
+            LARGE_DATA_STREAM
+        ))
+        val streamFromPipe: ParcelableInputStream<T>? = intent.getParcelableExtra(type.keyFor(
+            LARGE_DATA_PIPE
+        ))
+        val streamForResult: ParcelableOutputStream<T>? = intent.getParcelableExtra(type.keyFor(
+            LARGE_DATA_RESULT_BY_PIPE
+        ))
+
+        if (data != null) {
+            timeTextView.text = "..."
+            dataTypeTextView.text = "$type data"
+            dataTextView.text = "Reading data..."
+            timeTextView.text = measureTimeMillis {
+                dataTextView.text = data.hashCode().toString()
+            }.toString()
+            return true
+        }
+
+        if (slice != null) {
+            timeTextView.text = "..."
+            dataTypeTextView.text = "$type slice"
+            dataTextView.text = "Reading data..."
+            Thread {
+                val start = System.currentTimeMillis()
+                val result = slice.join()
+                val end = System.currentTimeMillis()
+                dataTextView.post {
+                    dataTextView.text = result.hashCode().toString()
+                    timeTextView.text = (end - start).toString()
+                }
+            }.start()
+            return true
+        }
+
+        if (stream != null) {
+            timeTextView.text = "..."
+            dataTypeTextView.text = "$type stream"
+            dataTextView.text = "Reading data..."
+            Thread {
+                val start = System.currentTimeMillis()
+                val result = stream.read(T::class.java)
+                val end = System.currentTimeMillis()
+                dataTextView.post {
+                    dataTextView.text = result.hashCode().toString()
+                    timeTextView.text = (end - start).toString()
+                }
+            }.start()
+            return true
+        }
+
+        if (streamFromPipe != null) {
+            timeTextView.text = "..."
+            dataTypeTextView.text = "$type stream from pipe"
+            dataTextView.text = "Reading data..."
+            Thread {
+                val start = System.currentTimeMillis()
+                val result = streamFromPipe.read(T::class.java)
+                val end = System.currentTimeMillis()
+                dataTextView.post {
+                    dataTextView.text = result.hashCode().toString()
+                    timeTextView.text = (end - start).toString()
+                }
+            }.start()
+            return true
+        }
+
+        if (streamForResult != null) {
+            dataTypeTextView.text = "$type stream to pipe as result"
+            timeTextView.text = "..."
+            val parcelableStream = (streamForResult as? ParcelableOutputStream<ParcelableLargeData>).takeIf { type == DataType.PARCELABLE }
+            val serializableStream = (streamForResult as? ParcelableOutputStream<SerializableLargeData>).takeIf { type == DataType.SERIALIZABLE }
+
+            if (parcelableStream != null || serializableStream != null) {
+                Thread {
+                    dataTextView.post { dataTextView.text = "Writing result..." }
+                    val start = System.currentTimeMillis()
+                    println("start write")
+                    parcelableStream?.write(ParcelableLargeData.instance)
+                    serializableStream?.write(SerializableLargeData.instance)
+                    println("end write")
+
+                    val end = System.currentTimeMillis()
+                    dataTextView.post {
+                        dataTextView.text = "Done writing!"
+                        timeTextView.text = (end - start).toString()
+                    }
+                }.start()
+                return true
+            }
+        }
+
+        return false
+    }
+
+    private enum class DataType {
+        PARCELABLE,
+        SERIALIZABLE;
+
+        fun keyFor(type: String): String = "${name}_DATA_{$type}_KEY"
+    }
+
+    companion object {
+
+        private const val LARGE_DATA = "LARGE_DATA"
+        private const val LARGE_DATA_SLICE = "LARGE_DATA_SLICE"
+        private const val LARGE_DATA_STREAM = "LARGE_DATA_STREAM"
+        private const val LARGE_DATA_PIPE = "LARGE_DATA_PIPE"
+
+        private const val LARGE_DATA_RESULT_BY_PIPE = "LARGE_DATA_RESULT_BY_PIPE"
+
+        fun create(context: Context, largeData: ParcelableLargeData): Intent =
+            Intent(context, TargetActivity::class.java).apply {
+                putExtra(DataType.PARCELABLE.keyFor(LARGE_DATA), largeData)
+            }
+
+        fun create(context: Context, largeData: SerializableLargeData): Intent =
+            Intent(context, TargetActivity::class.java).apply {
+                putExtra(DataType.SERIALIZABLE.keyFor(LARGE_DATA), largeData)
+            }
+
+        fun createSlice(context: Context, largeData: ParcelableLargeData): Intent =
+            Intent(context, TargetActivity::class.java).apply {
+                putExtra(DataType.PARCELABLE.keyFor(LARGE_DATA_SLICE), largeData.parcelableSlice())
+            }
+
+        fun createSlice(context: Context, largeData: SerializableLargeData): Intent =
+            Intent(context, TargetActivity::class.java).apply {
+                putExtra(DataType.PARCELABLE.keyFor(LARGE_DATA_SLICE), largeData.parcelableSlice())
+            }
+
+        fun createStream(context: Context, largeData: ParcelableLargeData): Intent =
+            Intent(context, TargetActivity::class.java).apply {
+                putExtra(
+                    DataType.PARCELABLE.keyFor(LARGE_DATA_STREAM),
+                    largeData.parcelableInputStream()
+                )
+            }
+
+        fun createStream(context: Context, largeData: SerializableLargeData): Intent =
+            Intent(context, TargetActivity::class.java).apply {
+                putExtra(
+                    DataType.SERIALIZABLE.keyFor(LARGE_DATA_STREAM),
+                    largeData.parcelableInputStream()
+                )
+            }
+
+        fun createPipe(context: Context, largeData: ParcelableLargeData, onFinish: () -> Unit): Intent {
+            val (reader, writer) = ParcelableStreamPipe<ParcelableLargeData>()
+
+            Thread {
+                Thread.sleep(3000)
+                writer.write(largeData)
+                onFinish()
+            }.start()
+
+            return Intent(context, TargetActivity::class.java).apply {
+                putExtra(DataType.PARCELABLE.keyFor(LARGE_DATA_PIPE), reader)
+            }
+        }
+
+        fun createPipe(context: Context, largeData: SerializableLargeData, onFinish: () -> Unit): Intent {
+            val (reader, writer) = ParcelableStreamPipe<SerializableLargeData>()
+
+            Thread {
+                Thread.sleep(3000)
+                writer.write(largeData)
+                onFinish()
+            }.start()
+
+            return Intent(context, TargetActivity::class.java).apply {
+                putExtra(DataType.SERIALIZABLE.keyFor(LARGE_DATA_PIPE), reader)
+            }
+        }
+
+        fun createParcelablePipeForResult(context: Context, stream: ParcelableOutputStream<ParcelableLargeData>): Intent {
+            return Intent(context, TargetActivity::class.java).apply {
+                putExtra(DataType.PARCELABLE.keyFor(LARGE_DATA_RESULT_BY_PIPE), stream)
+            }
+        }
+
+        fun createSerializablePipeForResult(context: Context, stream: ParcelableOutputStream<SerializableLargeData>): Intent {
+            return Intent(context, TargetActivity::class.java).apply {
+                putExtra(DataType.SERIALIZABLE.keyFor(LARGE_DATA_RESULT_BY_PIPE), stream)
+            }
+        }
+    }
+}
