@@ -48,8 +48,9 @@ android {
 
 dependencies {
 
-    implementation(project(":parcelable-slice"))
-    implementation(project(":parcelable-stream"))
+    implementation(project(":parcelable:slice"))
+    implementation(project(":parcelable:stream"))
+
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")

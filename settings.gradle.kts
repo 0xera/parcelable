@@ -14,8 +14,10 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "parcelable-stream-slice"
-include(":app")
+rootProject.name = "parcelable"
+include(":demo-app")
 include(":android-utils")
-include(":parcelable-stream")
-include(":parcelable-slice")
+
+include(":parcelable")
+include(":parcelable:stream")
+include(":parcelable:slice")
