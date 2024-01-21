@@ -21,6 +21,12 @@ android {
     flavorDimensions += "type"
 
     productFlavors {
+        create("default") {
+            dimension = "type"
+            applicationIdSuffix = ".default"
+            buildConfigField("String", "MIRROR_PACKAGE", "\"$namespace.default\"")
+        }
+
         create("first") {
             dimension = "type"
             applicationIdSuffix = ".first"

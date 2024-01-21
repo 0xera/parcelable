@@ -70,6 +70,44 @@
         android:layout_height="wrap_content"
         android:text="Pipe" />
 
+    <Button
+        android:id="@+id/button_go_pipe_for_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pipe for result" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Time result from pipe:" />
+
+        <TextView
+            android:id="@+id/text_view_result_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Result from pipe:" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/text_view_result"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Data" />
+
+    </androidx.core.widget.NestedScrollView>
+
 </LinearLayout>
-
-

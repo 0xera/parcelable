@@ -9,12 +9,12 @@ val largeData: Serializable = //...
  
 // send    
 Intent().apply {
-    setComponent(APP_PACKAGE_NAME, ACTIVITY_PACKAGE_NAME)
+    setComponent(ComponentName(APP_PACKAGE_NAME, ACTIVITY_PACKAGE_NAME))
     putExtra(LARGE_DATA_STREAM, largeData.parcelableInputStream())
 }
 
 // receive
-intent.getParcelableExtra<ParcelableSlice<Parcelable>>(LARGE_DATA_STREAM)?.join()
+intent.getParcelableExtra<ParcelableInputStream<Parcelable>>(LARGE_DATA_STREAM)?.read()
 ```
 
 Slice (Worst performance):
@@ -25,12 +25,12 @@ val largeData: Serializable = //...
  
 // send    
 Intent().apply {
-    setComponent(APP_PACKAGE_NAME, ACTIVITY_PACKAGE_NAME)
+    setComponent(ComponentName(APP_PACKAGE_NAME, ACTIVITY_PACKAGE_NAME))
     putExtra(LARGE_DATA_SLICE, largeData.parcelableSlice())
 }
 
 // receive
-intent.getParcelableExtra<ParcelableInputStream<Parcelable>>(LARGE_DATA_SLICE)?.read()
+intent.getParcelableExtra<ParcelableSlice<Parcelable>>(LARGE_DATA_SLICE)?.join()
 ```
 
 Pipe (Be careful about process lifecycle):
@@ -47,7 +47,7 @@ Thread {
 }.start()
     
 Intent().apply {
-    setComponent(APP_PACKAGE_NAME, ACTIVITY_PACKAGE_NAME)
+    setComponent(ComponentName(APP_PACKAGE_NAME, ACTIVITY_PACKAGE_NAME))
     putExtra(LARGE_DATA_PIPE, reader)
 }
 
