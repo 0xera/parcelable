@@ -12,7 +12,6 @@ import com.zero.xera.parcelable.stream.read
 
 class MainActivity : AppCompatActivity() {
 
-    @OptIn(UnstableApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -71,50 +70,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             goToTarget(intent)
-        }
-
-        val pipeForResultButton = findViewById<Button>(R.id.button_go_pipe_for_result)
-        val resultTextView = findViewById<TextView>(R.id.text_view_result)
-        val resultTimeTextView = findViewById<TextView>(R.id.text_view_result_time)
-
-        pipeForResultButton.setOnClickListener {
-            resultTimeTextView.text = "..."
-            pipeForResultButton.text = "Receiving via pipe..."
-            resultTextView.text = ""
-            when {
-                isParcelable -> {
-                    val (read, write) = ParcelableStreamPipe<ParcelableLargeData>()
-                    goToTarget(TargetActivity.createParcelablePipeForResult(write))
-                    Thread {
-                        val start = System.currentTimeMillis()
-                        println("start read")
-                        val data = read.read()
-                        println("end read")
-                        val end = System.currentTimeMillis()
-                        resultTextView.post {
-                            pipeForResultButton.text = "Pipe for result"
-                            resultTextView.text = data.hashCode().toString()
-                            resultTimeTextView.text = (end - start).toString()
-                        }
-                    }.start()
-                }
-                else -> {
-                    val (read, write) = ParcelableStreamPipe<SerializableLargeData>()
-                    goToTarget(TargetActivity.createSerializablePipeForResult(write))
-                    Thread {
-                        val start = System.currentTimeMillis()
-                        println("start read")
-                        val data = read.read()
-                        println("end read")
-                        val end = System.currentTimeMillis()
-                        resultTextView.post {
-                            pipeForResultButton.text = "Pipe for result"
-                            resultTextView.text = data.hashCode().toString()
-                            resultTimeTextView.text = (end - start).toString()
-                        }
-                    }.start()
-                }
-            }
         }
     }
 

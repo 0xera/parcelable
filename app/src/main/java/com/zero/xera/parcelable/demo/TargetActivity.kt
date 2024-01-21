@@ -11,7 +11,6 @@ import com.zero.xera.parcelable.slice.ParcelableSlice
 import com.zero.xera.parcelable.slice.join
 import com.zero.xera.parcelable.slice.parcelableSlice
 import com.zero.xera.parcelable.stream.ParcelableInputStream
-import com.zero.xera.parcelable.stream.ParcelableOutputStream
 import com.zero.xera.parcelable.stream.ParcelableStreamPipe
 import com.zero.xera.parcelable.stream.UnstableApi
 import com.zero.xera.parcelable.stream.parcelableInputStream
@@ -48,15 +47,8 @@ class TargetActivity : AppCompatActivity(R.layout.activity_target) {
     private inline fun <reified T> handleLargeData(intent: Intent, type: DataType): Boolean {
         val data: T? = intent.getParcelableExtra(type.keyFor(LARGE_DATA))
         val slice: ParcelableSlice<T>? = intent.getParcelableExtra(type.keyFor(LARGE_DATA_SLICE))
-        val stream: ParcelableInputStream<T>? = intent.getParcelableExtra(type.keyFor(
-            LARGE_DATA_STREAM
-        ))
-        val streamFromPipe: ParcelableInputStream<T>? = intent.getParcelableExtra(type.keyFor(
-            LARGE_DATA_PIPE
-        ))
-        val streamForResult: ParcelableOutputStream<T>? = intent.getParcelableExtra(type.keyFor(
-            LARGE_DATA_RESULT_BY_PIPE
-        ))
+        val stream: ParcelableInputStream<T>? = intent.getParcelableExtra(type.keyFor(LARGE_DATA_STREAM))
+        val streamFromPipe: ParcelableInputStream<T>? = intent.getParcelableExtra(type.keyFor(LARGE_DATA_PIPE))
 
         if (data != null) {
             timeTextView.text = "..."
@@ -116,31 +108,6 @@ class TargetActivity : AppCompatActivity(R.layout.activity_target) {
             return true
         }
 
-        if (streamForResult != null) {
-            dataTypeTextView.text = "$type stream to pipe as result"
-            timeTextView.text = "..."
-            val parcelableStream = (streamForResult as? ParcelableOutputStream<ParcelableLargeData>).takeIf { type == DataType.PARCELABLE }
-            val serializableStream = (streamForResult as? ParcelableOutputStream<SerializableLargeData>).takeIf { type == DataType.SERIALIZABLE }
-
-            if (parcelableStream != null || serializableStream != null) {
-                Thread {
-                    dataTextView.post { dataTextView.text = "Writing result..." }
-                    val start = System.currentTimeMillis()
-                    println("start write")
-                    parcelableStream?.write(ParcelableLargeData.instance)
-                    serializableStream?.write(SerializableLargeData.instance)
-                    println("end write")
-
-                    val end = System.currentTimeMillis()
-                    dataTextView.post {
-                        dataTextView.text = "Done writing!"
-                        timeTextView.text = (end - start).toString()
-                    }
-                }.start()
-                return true
-            }
-        }
-
         return false
     }
 
@@ -157,8 +124,6 @@ class TargetActivity : AppCompatActivity(R.layout.activity_target) {
         private const val LARGE_DATA_SLICE = "LARGE_DATA_SLICE"
         private const val LARGE_DATA_STREAM = "LARGE_DATA_STREAM"
         private const val LARGE_DATA_PIPE = "LARGE_DATA_PIPE"
-
-        private const val LARGE_DATA_RESULT_BY_PIPE = "LARGE_DATA_RESULT_BY_PIPE"
 
         fun create(largeData: ParcelableLargeData): Intent =
             Intent().apply {
@@ -221,20 +186,6 @@ class TargetActivity : AppCompatActivity(R.layout.activity_target) {
             return Intent().apply {
                 setComponent(ComponentName(BuildConfig.MIRROR_PACKAGE, TargetActivity::class.java.name))
                 putExtra(DataType.SERIALIZABLE.keyFor(LARGE_DATA_PIPE), reader)
-            }
-        }
-
-        fun createParcelablePipeForResult(stream: ParcelableOutputStream<ParcelableLargeData>): Intent {
-            return Intent().apply {
-                setComponent(ComponentName(BuildConfig.MIRROR_PACKAGE, TargetActivity::class.java.name))
-                putExtra(DataType.PARCELABLE.keyFor(LARGE_DATA_RESULT_BY_PIPE), stream)
-            }
-        }
-
-        fun createSerializablePipeForResult(stream: ParcelableOutputStream<SerializableLargeData>): Intent {
-            return Intent().apply {
-                setComponent(ComponentName(BuildConfig.MIRROR_PACKAGE, TargetActivity::class.java.name))
-                putExtra(DataType.SERIALIZABLE.keyFor(LARGE_DATA_RESULT_BY_PIPE), stream)
             }
         }
     }
