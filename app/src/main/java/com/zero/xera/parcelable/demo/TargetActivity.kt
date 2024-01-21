@@ -2,22 +2,23 @@
 
 package com.zero.xera.parcelable.demo
 
-import android.content.Context
+import android.content.ComponentName
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import com.zero.xera.parcelable.slice.ParcelableSlice
 import com.zero.xera.parcelable.slice.join
 import com.zero.xera.parcelable.slice.parcelableSlice
-import com.zero.xera.parcelable.stream.ParcelableOutputStream
 import com.zero.xera.parcelable.stream.ParcelableInputStream
+import com.zero.xera.parcelable.stream.ParcelableOutputStream
 import com.zero.xera.parcelable.stream.ParcelableStreamPipe
 import com.zero.xera.parcelable.stream.UnstableApi
 import com.zero.xera.parcelable.stream.parcelableInputStream
 import com.zero.xera.parcelable.stream.read
 import com.zero.xera.parcelable.stream.write
 import kotlin.system.measureTimeMillis
+
 
 class TargetActivity : AppCompatActivity(R.layout.activity_target) {
 
@@ -27,6 +28,8 @@ class TargetActivity : AppCompatActivity(R.layout.activity_target) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        findViewById<TextView>(R.id.text_view_package).text = packageName
 
         dataTextView = findViewById(R.id.text_view_data)
         dataTypeTextView = findViewById(R.id.text_view_data_type)
@@ -157,78 +160,80 @@ class TargetActivity : AppCompatActivity(R.layout.activity_target) {
 
         private const val LARGE_DATA_RESULT_BY_PIPE = "LARGE_DATA_RESULT_BY_PIPE"
 
-        fun create(context: Context, largeData: ParcelableLargeData): Intent =
-            Intent(context, TargetActivity::class.java).apply {
+        fun create(largeData: ParcelableLargeData): Intent =
+            Intent().apply {
+                setComponent(ComponentName(BuildConfig.MIRROR_PACKAGE, TargetActivity::class.java.name))
                 putExtra(DataType.PARCELABLE.keyFor(LARGE_DATA), largeData)
             }
 
-        fun create(context: Context, largeData: SerializableLargeData): Intent =
-            Intent(context, TargetActivity::class.java).apply {
+        fun create(largeData: SerializableLargeData): Intent =
+            Intent().apply {
+                setComponent(ComponentName(BuildConfig.MIRROR_PACKAGE, TargetActivity::class.java.name))
                 putExtra(DataType.SERIALIZABLE.keyFor(LARGE_DATA), largeData)
             }
 
-        fun createSlice(context: Context, largeData: ParcelableLargeData): Intent =
-            Intent(context, TargetActivity::class.java).apply {
+        fun createSlice(largeData: ParcelableLargeData): Intent =
+            Intent().apply {
+                setComponent(ComponentName(BuildConfig.MIRROR_PACKAGE, TargetActivity::class.java.name))
                 putExtra(DataType.PARCELABLE.keyFor(LARGE_DATA_SLICE), largeData.parcelableSlice())
             }
 
-        fun createSlice(context: Context, largeData: SerializableLargeData): Intent =
-            Intent(context, TargetActivity::class.java).apply {
+        fun createSlice(largeData: SerializableLargeData): Intent =
+            Intent().apply {
+                setComponent(ComponentName(BuildConfig.MIRROR_PACKAGE, TargetActivity::class.java.name))
                 putExtra(DataType.PARCELABLE.keyFor(LARGE_DATA_SLICE), largeData.parcelableSlice())
             }
 
-        fun createStream(context: Context, largeData: ParcelableLargeData): Intent =
-            Intent(context, TargetActivity::class.java).apply {
-                putExtra(
-                    DataType.PARCELABLE.keyFor(LARGE_DATA_STREAM),
-                    largeData.parcelableInputStream()
-                )
+        fun createStream(largeData: ParcelableLargeData): Intent =
+            Intent().apply {
+                setComponent(ComponentName(BuildConfig.MIRROR_PACKAGE, TargetActivity::class.java.name))
+                putExtra(DataType.PARCELABLE.keyFor(LARGE_DATA_STREAM), largeData.parcelableInputStream())
             }
 
-        fun createStream(context: Context, largeData: SerializableLargeData): Intent =
-            Intent(context, TargetActivity::class.java).apply {
-                putExtra(
-                    DataType.SERIALIZABLE.keyFor(LARGE_DATA_STREAM),
-                    largeData.parcelableInputStream()
-                )
+        fun createStream(largeData: SerializableLargeData): Intent =
+            Intent().apply {
+                setComponent(ComponentName(BuildConfig.MIRROR_PACKAGE, TargetActivity::class.java.name))
+                putExtra(DataType.SERIALIZABLE.keyFor(LARGE_DATA_STREAM), largeData.parcelableInputStream())
             }
 
-        fun createPipe(context: Context, largeData: ParcelableLargeData, onFinish: () -> Unit): Intent {
+        fun createPipe(largeData: ParcelableLargeData, onFinish: () -> Unit): Intent {
             val (reader, writer) = ParcelableStreamPipe<ParcelableLargeData>()
 
             Thread {
-                Thread.sleep(3000)
                 writer.write(largeData)
                 onFinish()
             }.start()
 
-            return Intent(context, TargetActivity::class.java).apply {
+            return Intent().apply {
+                setComponent(ComponentName(BuildConfig.MIRROR_PACKAGE, TargetActivity::class.java.name))
                 putExtra(DataType.PARCELABLE.keyFor(LARGE_DATA_PIPE), reader)
             }
         }
 
-        fun createPipe(context: Context, largeData: SerializableLargeData, onFinish: () -> Unit): Intent {
+        fun createPipe(largeData: SerializableLargeData, onFinish: () -> Unit): Intent {
             val (reader, writer) = ParcelableStreamPipe<SerializableLargeData>()
 
             Thread {
-                Thread.sleep(3000)
                 writer.write(largeData)
                 onFinish()
             }.start()
 
-            return Intent(context, TargetActivity::class.java).apply {
+            return Intent().apply {
+                setComponent(ComponentName(BuildConfig.MIRROR_PACKAGE, TargetActivity::class.java.name))
                 putExtra(DataType.SERIALIZABLE.keyFor(LARGE_DATA_PIPE), reader)
             }
         }
 
-        fun createParcelablePipeForResult(context: Context, stream: ParcelableOutputStream<ParcelableLargeData>): Intent {
-            return Intent(context, TargetActivity::class.java).apply {
+        fun createParcelablePipeForResult(stream: ParcelableOutputStream<ParcelableLargeData>): Intent {
+            return Intent().apply {
+                setComponent(ComponentName(BuildConfig.MIRROR_PACKAGE, TargetActivity::class.java.name))
                 putExtra(DataType.PARCELABLE.keyFor(LARGE_DATA_RESULT_BY_PIPE), stream)
             }
         }
 
-        fun createSerializablePipeForResult(context: Context, stream: ParcelableOutputStream<SerializableLargeData>): Intent {
-            return Intent(context, TargetActivity::class.java).apply {
+        fun createSerializablePipeForResult(stream: ParcelableOutputStream<SerializableLargeData>): Intent {
+            return Intent().apply {
+                setComponent(ComponentName(BuildConfig.MIRROR_PACKAGE, TargetActivity::class.java.name))
                 putExtra(DataType.SERIALIZABLE.keyFor(LARGE_DATA_RESULT_BY_PIPE), stream)
             }
         }

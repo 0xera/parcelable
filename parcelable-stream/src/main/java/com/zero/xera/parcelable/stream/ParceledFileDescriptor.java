@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.zero.xera.parcelable.stream.internal;
+package com.zero.xera.parcelable.stream;
 
 import android.os.Parcel;
 import android.os.ParcelFileDescriptor;
 import android.os.Parcelable;
 
-public class ParceledFileDescriptor extends BaseParceledFileDescriptor {
+class ParceledFileDescriptor extends BaseParceledFileDescriptor {
     public ParceledFileDescriptor(ParcelFileDescriptor descriptor) {
         super(descriptor);
     }

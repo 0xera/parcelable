@@ -15,18 +15,24 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "MIRROR_PACKAGE", "\"$namespace\"")
     }
 
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+    flavorDimensions += "type"
+
+    productFlavors {
+        create("first") {
+            dimension = "type"
+            applicationIdSuffix = ".first"
+            buildConfigField("String", "MIRROR_PACKAGE", "\"$namespace.second\"")
+        }
+        create("second") {
+            dimension = "type"
+            applicationIdSuffix = ".second"
+            buildConfigField("String", "MIRROR_PACKAGE", "\"$namespace.first\"")
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -34,10 +40,13 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
+    buildFeatures {
+        buildConfig = true
+    }
 }
 
 dependencies {
-//    compileOnly(project(":android-utils"))
 
     implementation(project(":parcelable-slice"))
     implementation(project(":parcelable-stream"))

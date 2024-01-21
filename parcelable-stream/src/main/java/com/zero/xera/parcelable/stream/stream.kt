@@ -6,10 +6,6 @@ import android.os.ParcelFileDescriptor.AutoCloseInputStream
 import android.os.ParcelFileDescriptor.AutoCloseOutputStream
 import android.os.Parcelable
 import androidx.annotation.WorkerThread
-import com.zero.xera.parcelable.stream.internal.ParcelType
-import com.zero.xera.parcelable.stream.internal.ParceledFileDescriptor
-import com.zero.xera.parcelable.stream.internal.createParcelFileDescriptor
-import com.zero.xera.parcelable.stream.internal.toParcelType
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.ObjectInputStream
@@ -54,8 +50,8 @@ private fun <T : Parcelable> T.parcelableToInputStream(): ParcelableInputStreamI
     return try {
         parcel.writeParcelable(this, 0)
         val bytes = parcel.marshall()
-        val parcelDescriptor = createParcelFileDescriptor(bytes, ParcelType.Parcelable, null)
-        ParcelableInputStreamImpl(ParceledFileDescriptor(parcelDescriptor))
+        val descriptor = createParcelFileDescriptorFromData(bytes, ParcelType.Parcelable, null)
+        ParcelableInputStreamImpl(ParceledFileDescriptor(descriptor))
     } finally {
         parcel.recycle()
     }
@@ -65,8 +61,8 @@ private fun <T : Serializable> T.serializableToInputStream(): ParcelableInputStr
     ByteArrayOutputStream().use { boas ->
         ObjectOutputStream(boas).use { oos -> oos.writeObject(this) }
         val bytes = boas.toByteArray()
-        val parcelDescriptor = createParcelFileDescriptor(bytes, ParcelType.Serializable, null)
-        return ParcelableInputStreamImpl(ParceledFileDescriptor(parcelDescriptor))
+        val descriptor = createParcelFileDescriptorFromData(bytes, ParcelType.Serializable, null)
+        return ParcelableInputStreamImpl(ParceledFileDescriptor(descriptor))
     }
 }
 
@@ -113,8 +109,9 @@ private fun <T : Serializable> T.writeSerializableTo(descriptor: ParcelFileDescr
 fun <T> ParcelableInputStream<T>.read(clazz: Class<T>): T? {
     if (Parcelable::class.java.isAssignableFrom(clazz).not() && Serializable::class.java.isAssignableFrom(clazz).not()) return null
     if (this !is ParcelableInputStreamImpl<T>) return null
+    val descriptor = parceledDescriptor?.descriptor ?: return null
 
-    AutoCloseInputStream(parceledDescriptor.descriptor).use { acis ->
+    AutoCloseInputStream(descriptor).use { acis ->
         val parcelType = acis.read()
         val bytes = acis.readBytes()
         return when (parcelType.toParcelType()) {

@@ -13,11 +13,10 @@
         android:theme="@style/Theme.ParceledListSliceTest"
         tools:targetApi="31" >
         <activity
-            android:process=":child"
-            android:name="com.zero.xera.parcelable.demo.TargetActivity"
-            android:exported="false" />
+            android:exported="true"
+            android:name=".TargetActivity" />
         <activity
-            android:name="com.zero.xera.parcelable.demo.MainActivity"
+            android:name=".MainActivity"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

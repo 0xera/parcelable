@@ -1,4 +1,4 @@
-package com.zero.xera.parcelable.stream.internal
+package com.zero.xera.parcelable.stream
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -10,7 +10,7 @@ import kotlin.concurrent.getOrSet
 
 private val byteArrayThreadLocal = ThreadLocal<ByteArray>()
 
-internal fun createParcelFileDescriptor(
+internal fun createParcelFileDescriptorFromData(
     data: ByteArray,
     parcelType: ParcelType,
     context: Context? = null
@@ -22,6 +22,7 @@ internal fun createParcelFileDescriptor(
 
     memoryFile.writeBytes(typeArray, 0, 0, 1)
     memoryFile.writeBytes(data, 0, 1, data.size)
+    memoryFile.allowPurging(true)
 
     return createParcelFileDescriptorLegacy(memoryFile)
 //    TODO Seems it is not needed

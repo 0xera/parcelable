@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.zero.xera.parcelable.stream.internal;
+package com.zero.xera.parcelable.stream;
 
 import android.os.BadParcelableException;
 import android.os.Binder;

@@ -1,4 +1,4 @@
-package com.zero.xera.parcelable.stream.internal
+package com.zero.xera.parcelable.stream
 
 
 internal enum class ParcelType(val type: Int) {

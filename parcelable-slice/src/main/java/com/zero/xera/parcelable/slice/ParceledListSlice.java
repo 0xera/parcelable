@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.zero.xera.parcelable.slice.internal;
+package com.zero.xera.parcelable.slice;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -22,7 +22,7 @@ import android.os.Parcelable;
 import java.util.Collections;
 import java.util.List;
 
-public class ParceledListSlice<T extends Parcelable> extends BaseParceledListSlice<T> {
+class ParceledListSlice<T extends Parcelable> extends BaseParceledListSlice<T> {
     public ParceledListSlice(List<T> list) {
         super(list);
     }

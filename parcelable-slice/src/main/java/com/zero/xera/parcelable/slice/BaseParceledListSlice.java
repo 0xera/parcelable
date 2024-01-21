@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.zero.xera.parcelable.slice.internal;
+package com.zero.xera.parcelable.slice;
 
 import android.os.BadParcelableException;
 import android.os.Binder;
