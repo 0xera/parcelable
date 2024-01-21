@@ -1,4 +1,4 @@
-[![](https://jitpack.io/v/0xera/parcelable-stream-slice.svg)](https://jitpack.io/#0xera/parcelable-stream-slice)
+[![](https://jitpack.io/v/0xera/parcelable.svg)](https://jitpack.io/#0xera/parcelable)
 
 
 Stream (Best performance):
@@ -67,7 +67,7 @@ dependencyResolutionManagement {
 }
 
 dependencies {
-    implementation("com.github.0xera.parcelable-stream-slice:stream:0.1.1")
-    implementation("com.github.0xera.parcelable-stream-slice:slice:0.1.1")
+    implementation("com.github.0xera.parcelable:stream:0.1")
+    implementation("com.github.0xera.parcelable:slice:0.1")
 }
 ```
