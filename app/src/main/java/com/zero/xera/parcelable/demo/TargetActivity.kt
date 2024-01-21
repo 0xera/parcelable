@@ -1,4 +1,3 @@
-@file:OptIn(UnstableApi::class)
 
 package com.zero.xera.parcelable.demo
 
@@ -12,12 +11,10 @@ import com.zero.xera.parcelable.slice.join
 import com.zero.xera.parcelable.slice.parcelableSlice
 import com.zero.xera.parcelable.stream.ParcelableInputStream
 import com.zero.xera.parcelable.stream.ParcelableStreamPipe
-import com.zero.xera.parcelable.stream.UnstableApi
 import com.zero.xera.parcelable.stream.parcelableInputStream
 import com.zero.xera.parcelable.stream.read
 import com.zero.xera.parcelable.stream.write
 import kotlin.system.measureTimeMillis
-
 
 class TargetActivity : AppCompatActivity(R.layout.activity_target) {
 

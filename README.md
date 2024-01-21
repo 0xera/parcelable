@@ -8,7 +8,8 @@ val largeData: Parcelable = //...
 val largeData: Serializable = //...
  
 // send    
-Intent(context, SomeActivity::class.java).apply {
+Intent().apply {
+    setComponent(APP_PACKAGE_NAME, ACTIVITY_PACKAGE_NAME)
     putExtra(LARGE_DATA_SLICE, largeData.parcelableSlice())
 }
 
@@ -23,7 +24,8 @@ val largeData: Parcelable = //...
 val largeData: Serializable = //...
  
 // send    
-Intent(context, SomeActivity::class.java).apply {
+Intent().apply {
+    setComponent(APP_PACKAGE_NAME, ACTIVITY_PACKAGE_NAME)
     putExtra(LARGE_DATA_STREAM, largeData.parcelableInputStream())
 }
 
@@ -31,7 +33,7 @@ Intent(context, SomeActivity::class.java).apply {
 intent.getParcelableExtra<ParcelableSlice<Parcelable>>(LARGE_DATA_STREAM)?.join()
 ```
 
-Pipe (Most unstable):
+Pipe:
 ```kotlin
 val largeData: Parcelable = //...
 // or
@@ -44,7 +46,8 @@ Thread {
   writer.write(largeData)
 }.start()
     
-Intent(context, SomeActivity::class.java).apply {
+Intent().apply {
+    setComponent(APP_PACKAGE_NAME, ACTIVITY_PACKAGE_NAME)
     putExtra(LARGE_DATA_PIPE, reader)
 }
 
@@ -64,7 +67,7 @@ dependencyResolutionManagement {
 }
 
 dependencies {
-    implementation("com.github.0xera.parcelable-stream-slice:stream:0.1")
-    implementation("com.github.0xera.parcelable-stream-slice:slice:0.1")
+    implementation("com.github.0xera.parcelable-stream-slice:stream:0.1.1")
+    implementation("com.github.0xera.parcelable-stream-slice:slice:0.1.1")
 }
 ```

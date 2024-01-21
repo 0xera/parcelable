@@ -6,9 +6,6 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
-import com.zero.xera.parcelable.stream.ParcelableStreamPipe
-import com.zero.xera.parcelable.stream.UnstableApi
-import com.zero.xera.parcelable.stream.read
 
 class MainActivity : AppCompatActivity() {
 

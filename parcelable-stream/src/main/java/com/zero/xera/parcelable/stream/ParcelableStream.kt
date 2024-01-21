@@ -1,13 +1,11 @@
 package com.zero.xera.parcelable.stream
 
 import android.os.Parcelable
-import com.zero.xera.parcelable.stream.ParceledFileDescriptor
 import kotlinx.parcelize.Parcelize
 import java.io.Closeable
 
 sealed interface ParcelableStream<T>
 
-@UnstableApi
 sealed interface ParcelableOutputStream<T> : ParcelableStream<T>, Parcelable, Closeable {
     val isFinished: Boolean
 }
@@ -15,7 +13,6 @@ sealed interface ParcelableOutputStream<T> : ParcelableStream<T>, Parcelable, Cl
 sealed interface ParcelableInputStream<T> : ParcelableStream<T>, Parcelable, Closeable
 
 @Parcelize
-@UnstableApi
 internal class ParcelableOutputStreamImpl<T>(
     internal var parceledDescriptor: ParceledFileDescriptor?,
     override var isFinished: Boolean = false,
