@@ -25,7 +25,7 @@ import android.os.Parcelable;
 import android.os.RemoteException;
 import android.util.Log;
 
-abstract class BaseParceledFileDescriptor implements Parcelable {
+public abstract class BaseParceledFileDescriptor implements Parcelable {
     private static String TAG = "ParceledDescriptor";
     private static boolean DEBUG = false;
     private ParcelFileDescriptor mDescriptor;

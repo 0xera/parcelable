@@ -20,7 +20,7 @@ import android.os.Parcel;
 import android.os.ParcelFileDescriptor;
 import android.os.Parcelable;
 
-class ParceledFileDescriptor extends BaseParceledFileDescriptor {
+public class ParceledFileDescriptor extends BaseParceledFileDescriptor {
     public ParceledFileDescriptor(ParcelFileDescriptor descriptor) {
         super(descriptor);
     }

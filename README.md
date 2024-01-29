@@ -57,8 +57,31 @@ Thread {
 }.start()
 ```
 
+#### Other usages
+Send `ParcelFileDescriptor` via intent:
+```kotlin
+val descriptor: ParcelFileDescriptor = // ...
 
-Add dependencies:
+Intent().apply {
+    setComponent(ComponentName(APP_PACKAGE_NAME, ACTIVITY_PACKAGE_NAME))
+    putExtra(PARCELED_DESCRIPTOR, ParceledFileDescriptor(descriptor))
+}
+
+intent.getParcelableExtra<ParceledFileDescriptor>(PARCELED_LIST)?.descriptor
+```
+Send `List<Parcelable>` via intent:
+```kotlin
+val list: List<Parcelable> = // ...
+
+Intent().apply {
+    setComponent(ComponentName(APP_PACKAGE_NAME, ACTIVITY_PACKAGE_NAME))
+    putExtra(PARCELED_LIST, ParceledList(descriptor))
+}
+
+intent.getParcelableExtra<ParceledList<Parcelable>>(PARCELED_LIST)?.list
+```
+
+#### How to add dependencies
 ```kotlin
 dependencyResolutionManagement {
     repositories {
@@ -67,7 +90,7 @@ dependencyResolutionManagement {
 }
 
 dependencies {
-    implementation("com.github.0xera.parcelable:stream:0.1")
-    implementation("com.github.0xera.parcelable:slice:0.1")
+    implementation("com.github.0xera.parcelable:stream:0.1.1")
+    implementation("com.github.0xera.parcelable:slice:0.1.1")
 }
 ```

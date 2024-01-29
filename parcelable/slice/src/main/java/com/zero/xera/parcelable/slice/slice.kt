@@ -84,5 +84,5 @@ private fun <T : Serializable> joinSerializable(bytes: ByteArray): T? =
 
 private fun <T> saveChunks(chunks: List<Chunk>): ParcelableSlice<T> =
     ParcelableSliceImpl<T, Chunk>(
-        ParceledListSlice(chunks)
+        ParceledList(chunks)
     )

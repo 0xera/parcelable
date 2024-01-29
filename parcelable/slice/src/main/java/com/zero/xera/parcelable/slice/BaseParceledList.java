@@ -27,8 +27,8 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-abstract class BaseParceledListSlice<T> implements Parcelable {
-    private static String TAG = "ParceledListSlice";
+public abstract class BaseParceledList<T> implements Parcelable {
+    private static String TAG = "ParceledList";
     private static boolean DEBUG = false;
     private static final int MAX_IPC_SIZE = 64 * 1024; // see IBinder.getSuggestedMaxIpcSizeBytes();
 
@@ -38,12 +38,12 @@ abstract class BaseParceledListSlice<T> implements Parcelable {
 
     private boolean mHasBeenParceled = false;
 
-    public BaseParceledListSlice(List<T> list) {
+    public BaseParceledList(List<T> list) {
         mList = list;
     }
 
     @SuppressWarnings("unchecked")
-    BaseParceledListSlice(Parcel p, ClassLoader loader) {
+    BaseParceledList(Parcel p, ClassLoader loader) {
         final int N = p.readInt();
         mList = new ArrayList<>(N);
         if (DEBUG) Log.d(TAG, "Retrieving " + N + " items");
