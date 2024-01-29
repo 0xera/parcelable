@@ -7,5 +7,5 @@ sealed interface ParcelableSlice<T> : Parcelable
 
 @Parcelize
 internal class ParcelableSliceImpl<T, C : Parcelable>(
-    internal val chunks: ParceledListSlice<C>
+    internal val chunks: ParceledList<C>
 ) : ParcelableSlice<T>

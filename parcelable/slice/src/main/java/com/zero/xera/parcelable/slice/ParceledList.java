@@ -19,20 +19,15 @@ package com.zero.xera.parcelable.slice;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.Collections;
 import java.util.List;
 
-class ParceledListSlice<T extends Parcelable> extends BaseParceledListSlice<T> {
-    public ParceledListSlice(List<T> list) {
+public class ParceledList<T extends Parcelable> extends BaseParceledList<T> {
+    public ParceledList(List<T> list) {
         super(list);
     }
 
-    private ParceledListSlice(Parcel in, ClassLoader loader) {
+    private ParceledList(Parcel in, ClassLoader loader) {
         super(in, loader);
-    }
-
-    public static <T extends Parcelable> ParceledListSlice<T> emptyList() {
-        return new ParceledListSlice<T>(Collections.<T> emptyList());
     }
 
     @Override
@@ -61,20 +56,20 @@ class ParceledListSlice<T extends Parcelable> extends BaseParceledListSlice<T> {
     }
 
     @SuppressWarnings("unchecked")
-    public static final Parcelable.ClassLoaderCreator<ParceledListSlice> CREATOR =
-            new Parcelable.ClassLoaderCreator<ParceledListSlice>() {
-        public ParceledListSlice createFromParcel(Parcel in) {
-            return new ParceledListSlice(in, null);
+    public static final Parcelable.ClassLoaderCreator<ParceledList> CREATOR =
+            new Parcelable.ClassLoaderCreator<ParceledList>() {
+        public ParceledList createFromParcel(Parcel in) {
+            return new ParceledList(in, null);
         }
 
         @Override
-        public ParceledListSlice createFromParcel(Parcel in, ClassLoader loader) {
-            return new ParceledListSlice(in, loader);
+        public ParceledList createFromParcel(Parcel in, ClassLoader loader) {
+            return new ParceledList(in, loader);
         }
 
         @Override
-        public ParceledListSlice[] newArray(int size) {
-            return new ParceledListSlice[size];
+        public ParceledList[] newArray(int size) {
+            return new ParceledList[size];
         }
     };
 }
